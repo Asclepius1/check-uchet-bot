@@ -29,7 +29,13 @@ def get_date_from_text(text: str) -> int | None:
         return parsed.date().strftime("%d.%m.%Y")
     return text
 
-reader = easyocr.Reader(['ru', 'en'], gpu=False)
+reader = None
+
+def get_reader():
+    global reader
+    if reader is None:
+        reader = easyocr.Reader(['ru', 'en'], gpu=False, verbose=False)
+    return reader
 
 async def extract_texts_from_photo(path: str) -> dict[str, str]:
     # reader = easyocr.Reader(['en','ru']) # this needs to run only once to load the model into memory
