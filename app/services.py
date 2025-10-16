@@ -44,7 +44,6 @@ async def extract_texts_from_photo(path: str) -> dict[str, str]:
     data = {
         'payment_type': 'Неизвестно',
     }
-    print(result)
     for i, line in enumerate(result):
         line = line.lower()
         try:
@@ -57,7 +56,6 @@ async def extract_texts_from_photo(path: str) -> dict[str, str]:
                     result[i+1] = result[i+1] + ' ' + result[i+2]
                 if 'г' in result[i+1].lower():
                     date = result[i+1].split('г')[0].strip()
-                    print(date)
                     data['date'] = get_date_from_text(date)
                 else:
                     data['date'] = result[i+1].replace(',', '.').lstrip().split(' ')[0].strip().replace('o', '0').replace('о', '0')
