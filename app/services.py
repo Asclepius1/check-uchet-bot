@@ -29,9 +29,10 @@ def get_date_from_text(text: str) -> int | None:
         return parsed.date().strftime("%d.%m.%Y")
     return text
 
+reader = easyocr.Reader(['ru', 'en'], gpu=False)
 
 async def extract_texts_from_photo(path: str) -> dict[str, str]:
-    reader = easyocr.Reader(['en','ru']) # this needs to run only once to load the model into memory
+    # reader = easyocr.Reader(['en','ru']) # this needs to run only once to load the model into memory
     result: list[str] = reader.readtext(path, detail=0)
     data = {
         'payment_type': 'Неизвестно',
