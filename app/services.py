@@ -39,7 +39,8 @@ def get_reader():
 
 async def extract_texts_from_photo(path: str) -> dict[str, str]:
     # reader = easyocr.Reader(['en','ru']) # this needs to run only once to load the model into memory
-    result: list[str] = reader.readtext(path, detail=0)
+    r = get_reader()
+    result: list[str] = r.readtext(path, detail=0)
     data = {
         'payment_type': 'Неизвестно',
     }
