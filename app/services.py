@@ -44,17 +44,20 @@ async def extract_texts_from_photo(path: str) -> dict[str, str]:
     data = {
         'payment_type': 'Неизвестно',
     }
+    print(result)
     for i, line in enumerate(result):
         line = line.lower()
         try:
             if 'успешно' in line or 'сумма' in line:
-                
                 data['sum_'] = result[i+1].lower().replace(' ', '').replace('т', '').replace('₸', '').replace('o', '0').replace('о', '0')
                 if data['sum_'][-1] == '7' or not data['sum_'][-1].isdigit():
                     data['sum_'] = data['sum_'][:-1]
             if 'дата' in line or 'счет выставлен' in line:
-                if 'г' in result[i+1]:
+                if 'г' in result[i+2].lower():
+                    result[i+1] = result[i+1] + ' ' + result[i+2]
+                if 'г' in result[i+1].lower():
                     date = result[i+1].split('г')[0].strip()
+                    print(date)
                     data['date'] = get_date_from_text(date)
                 else:
                     data['date'] = result[i+1].replace(',', '.').lstrip().split(' ')[0].strip().replace('o', '0').replace('о', '0')
@@ -65,7 +68,7 @@ async def extract_texts_from_photo(path: str) -> dict[str, str]:
                     data['payment_type'] = 'Halyk'
         except IndexError:
             continue
-    os.remove(path)
+    # os.remove(path)
     return data
 
 async def upload_to_google_sheet(data: dict[str, str]) -> None:
@@ -83,6 +86,6 @@ async def upload_to_google_sheet(data: dict[str, str]) -> None:
 
 
 if __name__ == "__main__":
-    # test = asyncio.run(extract_texts_from_photo("checks/photo_2025-10-15_00-58-39.jpg"))
-    # print(test)
-    print(get_date_from_text('25 сентября 2025'))
+    test = asyncio.run(extract_texts_from_photo("temp/photo_2025-10-16_18-01-13.jpg"))
+    print(test)
+    # print(get_date_from_text('25 сентября 2025'))
