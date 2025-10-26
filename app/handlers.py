@@ -9,7 +9,7 @@ from aiogram.types import Message, CallbackQuery
 
 from app.users import UserData
 from app.states import Form, NonCashForm, UserForm
-from app.services import upload_to_google_sheet, extract_texts_from_photo
+from app.services import upload_to_google_sheet, extract_texts_from_photo, is_sum_valid
 from app.keyboards import inline_buttons_pay_type, inlune_buttons_agreement
 
 
@@ -49,10 +49,13 @@ async def process_cash_type(callback: CallbackQuery, state: FSMContext):
 async def process_fio(message: Message, state: FSMContext):
     await state.update_data(fio=message.text)
     await state.set_state(Form.sum_)
-    await message.answer("Отправьте сумму чека (только цифры)")
+    await message.answer("Отправьте сумму чека (xxx.xx)")
 
 @router.message(Form.sum_)
 async def process_cash_sum(message: Message, state: FSMContext):
+    if not is_sum_valid(message.text):
+        await message.answer("Некорректный формат суммы! Пожалуйста, введите сумму в формате xxx.xx")
+        return
     await state.update_data(sum_=message.text, date=datetime.now().strftime("%d.%m.%Y"), payment_type='Наличные')
     data = await state.get_data()
     is_correct_message = await message.answer("Проверьте правильность введенных данных:\n"
