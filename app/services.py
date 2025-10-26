@@ -80,6 +80,13 @@ async def upload_to_google_sheet(data: dict[str, str]) -> None:
     
     gsheet.append_row(result)
 
+def is_sum_valid(sum_str: str) -> bool:
+    sum_value = sum_str.replace(' ', '').replace(',', '.')
+    try:
+        float(sum_value)
+        return True
+    except ValueError:
+        return False
 
 
 
